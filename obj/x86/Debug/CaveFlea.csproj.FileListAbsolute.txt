@@ -25,6 +25,5 @@ C:\Users\Administrator\Documents\Visual Studio 2015\Projects\CaveGame\bin\Window
 C:\Users\Administrator\Documents\Visual Studio 2015\Projects\CaveGame\bin\Windows\x86\Debug\SharpDX.XInput.xml
 C:\Users\Administrator\Documents\Visual Studio 2015\Projects\CaveGame\bin\Windows\x86\Debug\SharpDX.RawInput.xml
 C:\Users\Administrator\Documents\Visual Studio 2015\Projects\CaveGame\bin\Windows\x86\Debug\SharpDX.Direct3D9.xml
-C:\Users\Administrator\Documents\Visual Studio 2015\Projects\CaveGame\obj\x86\Debug\CaveFlea.csprojResolveAssemblyReference.cache
 C:\Users\Administrator\Documents\Visual Studio 2015\Projects\CaveGame\obj\x86\Debug\CaveGame.exe
 C:\Users\Administrator\Documents\Visual Studio 2015\Projects\CaveGame\obj\x86\Debug\CaveGame.pdb
