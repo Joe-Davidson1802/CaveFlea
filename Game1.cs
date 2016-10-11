@@ -155,11 +155,11 @@ namespace CaveFlea
             {
                 keysPressed.Add(key);
             }
-            if (PlayerPos.Y < 20 || Player2Pos.Y < 20)
+            if (PlayerPos.Y < 30 || Player2Pos.Y < 30)
             {
-                if (PlayerPos.Y < 20)
+                if (PlayerPos.Y < 30)
                     p1Wins++;
-                if (Player2Pos.Y < 20)
+                if (Player2Pos.Y < 30)
                     p2Wins++;
                 Regen();
             }
@@ -291,32 +291,30 @@ namespace CaveFlea
                 {
                     Vector2 position = new Vector2(i * 5, x * 5);
                     Color col = x < 20 ? Color.LimeGreen : Color.White;
-                    if (Math.Abs(i - PlayerPos.X) + Math.Abs(x - PlayerPos.Y) < 30 || Math.Abs(i - Player2Pos.X) + Math.Abs(x - Player2Pos.Y) < 30)
+                    if (Math.Abs(i - PlayerPos.X) + Math.Abs(x - PlayerPos.Y) < 30 || Math.Abs(i - Player2Pos.X) + Math.Abs(x - Player2Pos.Y) < 30 || x < 30)
                     {
-                        float grading;
-                        float grading2;
+                        int grades = 0;
+                        float grading = 0;
+                        float grading2 = 0;
+                        float grading3 = 0;
+                        if (x < 30)
+                        {
+                            grading3 = (255 / 30) * x;
+                            grades++;
+                        }
                         if (Math.Abs(i - PlayerPos.X) + Math.Abs(x - PlayerPos.Y) < 30)
                         {
                             grading = (255 / 30) * (Math.Abs(i - PlayerPos.X) + Math.Abs(x - PlayerPos.Y));
-                        } else
-                        {
-                            grading = 0;
+                            grades++;
                         }
                         if (Math.Abs(i - Player2Pos.X) + Math.Abs(x - Player2Pos.Y) < 30)
                         {
                             grading2 = (255 / 30) * (Math.Abs(i - Player2Pos.X) + Math.Abs(x - Player2Pos.Y));
-                        }
-                        else
-                        {
-                            grading2 = 0;
+                            grades++;
                         }
 
-                        grading = grading + grading2;
-                        if (Math.Abs(i - PlayerPos.X) + Math.Abs(x - PlayerPos.Y) < 30 && Math.Abs(i - Player2Pos.X) + Math.Abs(x - Player2Pos.Y) < 30)
-                        {
-                            grading = grading / 2;
-                        }
-
+                        grading = grading + grading2 + grading3;
+                        grading = grading / grades;
                         col = new Color()
                         {
                             R = (byte)(255 - grading),
@@ -369,11 +367,16 @@ namespace CaveFlea
                     }
                 }
             }
+            Vector2 stringl1 = pixelFont.MeasureString("PLAYER 1 WINS 0 | PLAYER 2 WINS 0");
+            Vector2 stringl2 = pixelFont.MeasureString("GET HERE TO WIN");
 
-            spriteBatch.DrawString(pixelFont, string.Format("PLAYER 1 WINS {0} | PLAYER 2 WINS {1}", p2Wins, p1Wins), new Vector2(105, 15), new Color(Color.Black, 253));
-            spriteBatch.DrawString(pixelFont, string.Format("PLAYER 1 WINS {0} | PLAYER 2 WINS {1}", p2Wins, p1Wins), new Vector2(100, 10), new Color(Color.White, 253));
-            spriteBatch.DrawString(pixelFont, string.Format("GET HERE TO WIN"), new Vector2(405, 75), new Color(Color.Black, 253));
-            spriteBatch.DrawString(pixelFont, string.Format("GET HERE TO WIN"), new Vector2(400, 70), new Color(Color.White, 253));
+            float paddingLeft = (GraphicsDevice.DisplayMode.Width / 2) - (stringl1.X / 2);
+            float paddingLeft2 = (GraphicsDevice.DisplayMode.Width / 2) - (stringl2.X / 2);
+
+            spriteBatch.DrawString(pixelFont, string.Format("PLAYER 1 WINS {0} | PLAYER 2 WINS {1}", p2Wins, p1Wins), new Vector2(paddingLeft + 5, 15), new Color(Color.Black, 253));
+            spriteBatch.DrawString(pixelFont, string.Format("PLAYER 1 WINS {0} | PLAYER 2 WINS {1}", p2Wins, p1Wins), new Vector2(paddingLeft, 10), new Color(Color.White, 253));
+            spriteBatch.DrawString(pixelFont, string.Format("GET HERE TO WIN"), new Vector2(paddingLeft2 + 5, 75), new Color(Color.Black, 253));
+            spriteBatch.DrawString(pixelFont, string.Format("GET HERE TO WIN"), new Vector2(paddingLeft2, 70), new Color(Color.White, 253));
 
 
             spriteBatch.End();
@@ -394,8 +397,8 @@ namespace CaveFlea
 
         public MapHandler()
         {
-            MapWidth = 250;
-            MapHeight = 180;
+            MapWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 5 - 20;
+            MapHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 5 - 20;
             PercentAreWalls = 50;
 
             RandomFillMap();
