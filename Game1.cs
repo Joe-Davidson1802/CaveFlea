@@ -7,11 +7,17 @@ using System.Linq;
 
 namespace CaveFlea
 {
+    public enum state
+    {
+        Menu,
+        Game
+    }
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
     public class Game1 : Game
     {
+        state gameState = state.Menu;
         int p1Wins = 0;
         int p2Wins = 0;
         GraphicsDeviceManager graphics;
@@ -30,9 +36,8 @@ namespace CaveFlea
         private bool Multiplayer;
         Camera2D _camera;
 
-        public Game1(bool multiplayer)
+        public Game1()
         {
-            Multiplayer = multiplayer;
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
@@ -97,7 +102,14 @@ namespace CaveFlea
             player2 = Content.Load<Texture2D>("player2");
             ground = Content.Load<Texture2D>("ground");
             wall = Content.Load<Texture2D>("wall");
-            pixelFont = Content.Load<SpriteFont>("Pixel");
+            if (Multiplayer)
+            {
+                pixelFont = Content.Load<SpriteFont>("Pixel");
+            }
+            else
+            {
+                pixelFont = Content.Load<SpriteFont>("PixelSingle");
+            }
         }
 
         /// <summary>
@@ -283,13 +295,22 @@ namespace CaveFlea
             // TODO: Add your update logic here
             float posx = GraphicsDevice.Viewport.Width / 2;
             float posy = GraphicsDevice.Viewport.Height / 2;
-            float temp = posx + ((GraphicsDevice.Viewport.Width / 5)/2);
-            if (posx + ((GraphicsDevice.Viewport.Width / 5) / 2) > GraphicsDevice.Viewport.Width)
+            Vector2 pos = (PlayerPos * 5) - (new Vector2(posx, posy));
+            if (pos.X > (float)GraphicsDevice.Viewport.Width / 2.5f)
             {
-                posx = GraphicsDevice.Viewport.Width - (GraphicsDevice.Viewport.Width / 5);
+               pos = new Vector2((float)GraphicsDevice.Viewport.Width / 2.5f, pos.Y);
             }
 
-            _camera.Position = (PlayerPos * 5) - (new Vector2(posx, posy));
+            if (pos.X < -(float)GraphicsDevice.Viewport.Width / 2.5f)
+            {
+                pos = new Vector2(-(float)GraphicsDevice.Viewport.Width / 2.5f, pos.Y);
+            }
+            if (pos.Y > (float)GraphicsDevice.Viewport.Height / 2.5f)
+            {
+                pos = new Vector2(pos.X, (float)GraphicsDevice.Viewport.Height / 2.5f);
+            }
+
+            _camera.Position = pos;
 
             base.Update(gameTime);
         }
@@ -391,14 +412,28 @@ namespace CaveFlea
             Vector2 stringl1 = pixelFont.MeasureString((Multiplayer) ? "PLAYER 1 WINS 0 | PLAYER 2 WINS 0": "WIN COUNT 0");
             Vector2 stringl2 = pixelFont.MeasureString("GET HERE TO WIN");
 
-            float paddingLeft = (GraphicsDevice.DisplayMode.Width / 2) - (stringl1.X / 2);
-            float paddingLeft2 = (GraphicsDevice.DisplayMode.Width / 2) - (stringl2.X / 2);
+            float paddingLeft = (_camera.Position.X  - (stringl1.X / 2)) + (GraphicsDevice.Viewport.Width / 2);
+            float paddingLeft2 = (_camera.Position.X - (stringl2.X / 2));
+            if (Multiplayer)
+            {
+                paddingLeft = (GraphicsDevice.DisplayMode.Width/2) - (stringl1.X/2);
+                paddingLeft2 = (GraphicsDevice.DisplayMode.Width/2) - (stringl2.X/2);
+            }
 
-            spriteBatch.DrawString(pixelFont, (Multiplayer) ? string.Format("PLAYER 1 WINS {0} | PLAYER 2 WINS {1}", p2Wins, p1Wins): string.Format("WIN COUNT {0}", p1Wins), new Vector2(paddingLeft + 5, 15), new Color(Color.Black, 253));
-            spriteBatch.DrawString(pixelFont, (Multiplayer) ? string.Format("PLAYER 1 WINS {0} | PLAYER 2 WINS {1}", p2Wins, p1Wins) : string.Format("WIN COUNT {0}", p1Wins), new Vector2(paddingLeft, 10), new Color(Color.White, 253));
-            spriteBatch.DrawString(pixelFont, string.Format("GET HERE TO WIN"), new Vector2(paddingLeft2 + 5, 75), new Color(Color.Black, 253));
-            spriteBatch.DrawString(pixelFont, string.Format("GET HERE TO WIN"), new Vector2(paddingLeft2, 70), new Color(Color.White, 253));
 
+            spriteBatch.DrawString(pixelFont, (Multiplayer) ? string.Format("PLAYER 1 WINS {0} | PLAYER 2 WINS {1}", p2Wins, p1Wins): string.Format("WIN COUNT {0}", p1Wins), new Vector2(paddingLeft + 5, (Multiplayer) ? 15 : _camera.Position.Y + (GraphicsDevice.Viewport.Height / 2) + 5 - 70), new Color(Color.Black, 253));
+            spriteBatch.DrawString(pixelFont,
+                (Multiplayer)
+                    ? string.Format("PLAYER 1 WINS {0} | PLAYER 2 WINS {1}", p2Wins, p1Wins)
+                    : string.Format("WIN COUNT {0}", p1Wins),
+                new Vector2(paddingLeft, (Multiplayer) ? 10 : _camera.Position.Y + (GraphicsDevice.Viewport.Height / 2 ) - 70 ), new Color(Color.White, 253));
+            if (Multiplayer)
+            {
+                spriteBatch.DrawString(pixelFont, string.Format("GET HERE TO WIN"), new Vector2(paddingLeft2 + 5, 75),
+                    new Color(Color.Black, 253));
+                spriteBatch.DrawString(pixelFont, string.Format("GET HERE TO WIN"), new Vector2(paddingLeft2, 70),
+                    new Color(Color.White, 253));
+            }
             spriteBatch.End();
 
             base.Draw(gameTime);

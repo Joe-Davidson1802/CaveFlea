@@ -67,3 +67,9 @@
 /processorParam:TextureFormat=Color
 /build:player2.png
 
+#begin PixelSingle.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:PixelSingle.spritefont
+

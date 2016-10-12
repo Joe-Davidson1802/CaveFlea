@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Pixel.spritefont" />
+    <None Include="Content\PixelSingle.spritefont" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

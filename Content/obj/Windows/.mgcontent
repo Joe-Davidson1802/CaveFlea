@@ -4,10 +4,11 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/Administrator/Documents/Visual Studio 2015/Projects/CaveGame/Content/ground.png</File>
-    <File>C:/Users/Administrator/Documents/Visual Studio 2015/Projects/CaveGame/Content/player.png</File>
-    <File>C:/Users/Administrator/Documents/Visual Studio 2015/Projects/CaveGame/Content/wall.png</File>
-    <File>C:/Users/Administrator/Documents/Visual Studio 2015/Projects/CaveGame/Content/Pixel.spritefont</File>
-    <File>C:/Users/Administrator/Documents/Visual Studio 2015/Projects/CaveGame/Content/player2.png</File>
+    <File>C:/Users/jdavidson/Git/CaveFlea/Content/ground.png</File>
+    <File>C:/Users/jdavidson/Git/CaveFlea/Content/player.png</File>
+    <File>C:/Users/jdavidson/Git/CaveFlea/Content/wall.png</File>
+    <File>C:/Users/jdavidson/Git/CaveFlea/Content/Pixel.spritefont</File>
+    <File>C:/Users/jdavidson/Git/CaveFlea/Content/player2.png</File>
+    <File>C:/Users/jdavidson/Git/CaveFlea/Content/PixelSingle.spritefont</File>
   </SourceFiles>
 </SourceFileCollection>
