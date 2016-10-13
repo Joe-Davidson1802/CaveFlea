@@ -285,7 +285,7 @@ namespace CaveFlea
             {
                 map.Map[(int)PlayerPos.X + 1, (int)PlayerPos.Y] = 0;
             }
-            if (Multiplayer && (Player2Pos.X + 1 < map.MapWidth && (keysPressed.Contains(Keys.D) && keysPressed.Contains(Keys.Space))) && map.Map[(int)Player2Pos.X + 1, (int)Player2Pos.Y] == 1)
+            if (Multiplayer && (Player2Pos.X + 1 < map.MapWidth && (keysPressed.Contains(Keys.D) && (keysPressed.Contains(Keys.Space) || keysPressed.Contains(Keys.LeftShift)))) && map.Map[(int)Player2Pos.X + 1, (int)Player2Pos.Y] == 1)
             {
                 map.Map[(int)Player2Pos.X + 1, (int)Player2Pos.Y] = 0;
             }
@@ -294,7 +294,7 @@ namespace CaveFlea
             {
                 map.Map[(int)PlayerPos.X - 1, (int)PlayerPos.Y] = 0;
             }
-            if (Multiplayer && Player2Pos.X - 1 >= 0 && (keysPressed.Contains(Keys.A) && keysPressed.Contains(Keys.Space)) && map.Map[(int)Player2Pos.X - 1, (int)Player2Pos.Y] == 1)
+            if (Multiplayer && Player2Pos.X - 1 >= 0 && (keysPressed.Contains(Keys.A) && (keysPressed.Contains(Keys.Space) || keysPressed.Contains(Keys.LeftShift))) && map.Map[(int)Player2Pos.X - 1, (int)Player2Pos.Y] == 1)
             {
                 map.Map[(int)Player2Pos.X - 1, (int)Player2Pos.Y] = 0;
             }
@@ -304,7 +304,7 @@ namespace CaveFlea
             {
                 map.Map[(int)PlayerPos.X, (int)PlayerPos.Y + 1] = 0;
             }
-            if (Multiplayer && Player2Pos.Y + 1 < map.MapHeight && (keysPressed.Contains(Keys.S) && keysPressed.Contains(Keys.Space))
+            if (Multiplayer && Player2Pos.Y + 1 < map.MapHeight && (keysPressed.Contains(Keys.S) && (keysPressed.Contains(Keys.Space) || keysPressed.Contains(Keys.LeftShift)))
                 && map.Map[(int)Player2Pos.X, (int)Player2Pos.Y + 1] == 1)
             {
                 map.Map[(int)Player2Pos.X, (int)Player2Pos.Y + 1] = 0;
