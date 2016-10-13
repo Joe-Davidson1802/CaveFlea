@@ -9,8 +9,8 @@
     <ProjectGuid>{38E46CBE-2DF9-454D-B798-0A9D591AD039}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CaveGame</RootNamespace>
-    <AssemblyName>CaveGame</AssemblyName>
+    <RootNamespace>CaveFlea</RootNamespace>
+    <AssemblyName>CaveFlea</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -43,6 +43,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="DrawingHelper">
+      <HintPath>dlls\DrawingHelper.dll</HintPath>
+    </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>

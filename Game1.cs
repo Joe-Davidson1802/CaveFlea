@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Linq;
+using Drawing;
 
 namespace CaveFlea
 {
@@ -17,11 +18,10 @@ namespace CaveFlea
     /// </summary>
     public class Game1 : Game
     {
-        state gameState = state.Menu;
-        int p1Wins = 0;
-        int p2Wins = 0;
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private int p1Wins;
+        private int p2Wins;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
         private MapHandler map;
         private Texture2D ground;
         private Texture2D wall;
@@ -29,14 +29,15 @@ namespace CaveFlea
         private Texture2D player2;
         private Vector2 PlayerPos;
         private Vector2 Player2Pos;
-        private int JumpCount = 0;
-        private int JumpCount2 = 0;
+        private int JumpCount;
+        private int JumpCount2;
         private SpriteFont pixelFont;
         private SpriteFont pixelFont2;
         private SpriteFont pixelFont3;
         private List<Keys> keysPressed = new List<Keys>();
         private bool Multiplayer;
-        Camera2D _camera;
+        private Camera2D _camera;
+        private Texture2D heightLine;
 
         public Game1()
         {
@@ -52,8 +53,6 @@ namespace CaveFlea
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             map = new MapHandler();
             map.MakeCaverns();
             map.MakeCaverns();
@@ -64,10 +63,9 @@ namespace CaveFlea
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
-            _camera = new Camera2D(GraphicsDevice.Viewport);
-            _camera.Zoom = 5;
+            _camera = new Camera2D(GraphicsDevice.Viewport) {Zoom = 5};
 
-            Random r = new Random();
+            var r = new Random();
 
             var x = r.Next(2, map.MapWidth - 2);
             var y = map.MapHeight - 1;
@@ -99,14 +97,12 @@ namespace CaveFlea
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
             player = Content.Load<Texture2D>("player");
             player2 = Content.Load<Texture2D>("player2");
             ground = Content.Load<Texture2D>("ground");
             wall = Content.Load<Texture2D>("wall");
-                pixelFont = Content.Load<SpriteFont>("Pixel");
-                pixelFont2 = Content.Load<SpriteFont>("PixelSingle");
+            pixelFont = Content.Load<SpriteFont>("Pixel");
+            pixelFont2 = Content.Load<SpriteFont>("PixelSingle");
             pixelFont3 = pixelFont;
         }
 
@@ -116,30 +112,22 @@ namespace CaveFlea
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
             player.Dispose();
             player2.Dispose();
             ground.Dispose();
             wall.Dispose();
         }
 
-        void Regen()
+        private void Regen()
         {
-            if (Multiplayer)
-            {
-                pixelFont = pixelFont3;
-            }
-            else
-            {
-                pixelFont = pixelFont2;
-            }
+            pixelFont = Multiplayer ? pixelFont3 : pixelFont2;
             map = new MapHandler();
             map.MakeCaverns();
             map.MakeCaverns();
             map.MakeCaverns();
             map.MakeCaverns();
 
-            Random r = new Random();
+            var r = new Random();
 
             var x = r.Next(2, map.MapWidth - 2);
             var y = map.MapHeight - 1;
@@ -170,8 +158,8 @@ namespace CaveFlea
         protected override void Update(GameTime gameTime)
         {
             keysPressed = keysPressed.Distinct().ToList();
-            KeyboardState state = Keyboard.GetState();
-            for (int i = 0; i < keysPressed.Count; i++)
+            var state = Keyboard.GetState();
+            for (var i = 0; i < keysPressed.Count; i++)
             {
                 if (state.IsKeyUp(keysPressed[i]))
                 {
@@ -313,22 +301,21 @@ namespace CaveFlea
             map.Map[(int)PlayerPos.X, (int)PlayerPos.Y] = 2;
             if(Multiplayer)
                 map.Map[(int)Player2Pos.X, (int)Player2Pos.Y] = 3;
-            // TODO: Add your update logic here
             float posx = GraphicsDevice.Viewport.Width / 2;
             float posy = GraphicsDevice.Viewport.Height / 2;
             Vector2 pos = (PlayerPos * 5) - (new Vector2(posx, posy));
-            if (pos.X > (float)GraphicsDevice.Viewport.Width / 2.5f)
+            if (pos.X > GraphicsDevice.Viewport.Width / 2.5f)
             {
-               pos = new Vector2((float)GraphicsDevice.Viewport.Width / 2.5f, pos.Y);
+               pos = new Vector2(GraphicsDevice.Viewport.Width / 2.5f, pos.Y);
             }
 
             if (pos.X < -(float)GraphicsDevice.Viewport.Width / 2.5f)
             {
                 pos = new Vector2(-(float)GraphicsDevice.Viewport.Width / 2.5f, pos.Y);
             }
-            if (pos.Y > (float)GraphicsDevice.Viewport.Height / 2.5f)
+            if (pos.Y > GraphicsDevice.Viewport.Height / 2.5f)
             {
-                pos = new Vector2(pos.X, (float)GraphicsDevice.Viewport.Height / 2.5f);
+                pos = new Vector2(pos.X, GraphicsDevice.Viewport.Height / 2.5f);
             }
 
             _camera.Position = pos;
@@ -342,26 +329,17 @@ namespace CaveFlea
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            if (Multiplayer)
-            {
-                pixelFont = pixelFont3;
-            }
-            else
-            {
-                pixelFont = pixelFont2;
-            }
+            pixelFont = Multiplayer ? pixelFont3 : pixelFont2;
             GraphicsDevice.Clear(Color.White);
-
-            // TODO: Add your drawing code here
+            
             var viewMatrix = _camera.GetViewMatrix();
-            spriteBatch.Begin(transformMatrix: (!Multiplayer) ? viewMatrix : Microsoft.Xna.Framework.Matrix.Identity);
+            spriteBatch.Begin(transformMatrix: (!Multiplayer) ? viewMatrix : Matrix.Identity);
 
             for (int i = 0; i < map.MapWidth; i++)
             {
                 for (int x = 0; x < map.MapHeight; x++)
                 {
-                    Vector2 position = new Vector2(i * 5, x * 5);
-                    Color col = x < 20 ? Color.LimeGreen : Color.White;
+                    var position = new Vector2(i * 5, x * 5);
                     if (Math.Abs(i - PlayerPos.X) + Math.Abs(x - PlayerPos.Y) < 30 || (Multiplayer && Math.Abs(i - Player2Pos.X) + Math.Abs(x - Player2Pos.Y) < 30 || x < 30))
                     {
                         int grades = 0;
@@ -375,18 +353,18 @@ namespace CaveFlea
                         }
                         if (Math.Abs(i - PlayerPos.X) + Math.Abs(x - PlayerPos.Y) < 30)
                         {
-                            grading = (255 / 30) * (Math.Abs(i - PlayerPos.X) + Math.Abs(x - PlayerPos.Y));
+                            grading = 8 * (Math.Abs(i - PlayerPos.X) + Math.Abs(x - PlayerPos.Y));
                             grades++;
                         }
                         if (Multiplayer && Math.Abs(i - Player2Pos.X) + Math.Abs(x - Player2Pos.Y) < 30)
                         {
-                            grading2 = (255 / 30) * (Math.Abs(i - Player2Pos.X) + Math.Abs(x - Player2Pos.Y));
+                            grading2 = 8 * (Math.Abs(i - Player2Pos.X) + Math.Abs(x - Player2Pos.Y));
                             grades++;
                         }
 
                         grading = grading + grading2 + grading3;
                         grading = grading / grades;
-                        col = new Color()
+                        var col = new Color()
                         {
                             R = (byte)(255 - grading),
                             G = (byte)(255 - grading),
@@ -441,28 +419,46 @@ namespace CaveFlea
             Vector2 stringl1 = pixelFont.MeasureString((Multiplayer) ? "PLAYER 1 WINS 0 | PLAYER 2 WINS 0": "WIN COUNT 0");
             Vector2 stringl2 = pixelFont.MeasureString("GET HERE TO WIN");
 
-            float paddingLeft = (_camera.Position.X  - (stringl1.X / 2)) + (GraphicsDevice.Viewport.Width / 2);
+            float paddingLeft = (_camera.Position.X  - (stringl1.X / 2)) + GraphicsDevice.Viewport.Width / 2;
             float paddingLeft2 = (_camera.Position.X - (stringl2.X / 2));
             if (Multiplayer)
             {
-                paddingLeft = (GraphicsDevice.DisplayMode.Width/2) - (stringl1.X/2);
-                paddingLeft2 = (GraphicsDevice.DisplayMode.Width/2) - (stringl2.X/2);
+                paddingLeft = GraphicsDevice.DisplayMode.Width/2 - (stringl1.X/2);
+                paddingLeft2 = GraphicsDevice.DisplayMode.Width/2 - (stringl2.X/2);
             }
 
 
-            spriteBatch.DrawString(pixelFont, (Multiplayer) ? string.Format("PLAYER 1 WINS {0} | PLAYER 2 WINS {1}", p2Wins, p1Wins): string.Format("WIN COUNT {0}", p1Wins), new Vector2(paddingLeft + 5, (Multiplayer) ? 15 : _camera.Position.Y + (GraphicsDevice.Viewport.Height / 2) + 5 - 70), new Color(Color.Black, 253));
+            spriteBatch.DrawString(pixelFont, (Multiplayer) ? $"PLAYER 1 WINS {p2Wins} | PLAYER 2 WINS {p1Wins}"
+                : $"WIN COUNT {p1Wins}", new Vector2(paddingLeft + 5, (Multiplayer) ? 15 : _camera.Position.Y + GraphicsDevice.Viewport.Height / 2 + 5 - 70), new Color(Color.Black, 253));
             spriteBatch.DrawString(pixelFont,
                 (Multiplayer)
-                    ? string.Format("PLAYER 1 WINS {0} | PLAYER 2 WINS {1}", p2Wins, p1Wins)
-                    : string.Format("WIN COUNT {0}", p1Wins),
-                new Vector2(paddingLeft, (Multiplayer) ? 10 : _camera.Position.Y + (GraphicsDevice.Viewport.Height / 2 ) - 70 ), new Color(Color.White, 253));
+                    ? $"PLAYER 1 WINS {p2Wins} | PLAYER 2 WINS {p1Wins}"
+                    : $"WIN COUNT {p1Wins}",
+                new Vector2(paddingLeft, (Multiplayer) ? 10 : _camera.Position.Y + GraphicsDevice.Viewport.Height / 2 - 70 ), new Color(Color.White, 253));
             if (Multiplayer)
             {
-                spriteBatch.DrawString(pixelFont, string.Format("GET HERE TO WIN"), new Vector2(paddingLeft2 + 5, 75),
+                spriteBatch.DrawString(pixelFont, "GET HERE TO WIN", new Vector2(paddingLeft2 + 5, 75),
                     new Color(Color.Black, 253));
-                spriteBatch.DrawString(pixelFont, string.Format("GET HERE TO WIN"), new Vector2(paddingLeft2, 70),
+                spriteBatch.DrawString(pixelFont, "GET HERE TO WIN", new Vector2(paddingLeft2, 70),
                     new Color(Color.White, 253));
             }
+
+
+            if (!Multiplayer)
+            {
+                heightLine = new Texture2D(graphics.GraphicsDevice, 5, (graphics.GraphicsDevice.Viewport.Height - ((int)PlayerPos.Y*5))/5);
+
+                Color[] data = new Color[5* (graphics.GraphicsDevice.Viewport.Height - (int)PlayerPos.Y)/5];
+                for (int i = 0; i < data.Length; ++i)
+                {
+                    data[i] = Color.White;
+                }
+
+                heightLine.SetData(data);
+                spriteBatch.Draw(heightLine, new Vector2((_camera.Position.X + GraphicsDevice.Viewport.Width / 2) - 150, (_camera.Position.Y + GraphicsDevice.Viewport.Height / 2 - 70)-((graphics.GraphicsDevice.Viewport.Height - ((int)PlayerPos.Y * 5)) / 5) + 150), Color.White);
+            }
+
+
             spriteBatch.End();
 
             base.Draw(gameTime);
@@ -490,8 +486,9 @@ namespace CaveFlea
 
         public void MakeCaverns()
         {
-            for (int column = 0, row = 0; row <= MapHeight - 1; row++)
+            for (var row = 0; row <= MapHeight - 1; row++)
             {
+                int column;
                 for (column = 0; column <= MapWidth - 1; column++)
                 {
                     Map[column, row] = PlaceWallLogic(column, row);
