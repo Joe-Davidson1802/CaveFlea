@@ -32,6 +32,8 @@ namespace CaveFlea
         private int JumpCount = 0;
         private int JumpCount2 = 0;
         private SpriteFont pixelFont;
+        private SpriteFont pixelFont2;
+        private SpriteFont pixelFont3;
         private List<Keys> keysPressed = new List<Keys>();
         private bool Multiplayer;
         Camera2D _camera;
@@ -59,6 +61,7 @@ namespace CaveFlea
             map.MakeCaverns();
             graphics.PreferredBackBufferHeight = map.MapHeight * 5;
             graphics.PreferredBackBufferWidth = map.MapWidth * 5;
+            graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
             _camera = new Camera2D(GraphicsDevice.Viewport);
@@ -102,14 +105,9 @@ namespace CaveFlea
             player2 = Content.Load<Texture2D>("player2");
             ground = Content.Load<Texture2D>("ground");
             wall = Content.Load<Texture2D>("wall");
-            if (Multiplayer)
-            {
                 pixelFont = Content.Load<SpriteFont>("Pixel");
-            }
-            else
-            {
-                pixelFont = Content.Load<SpriteFont>("PixelSingle");
-            }
+                pixelFont2 = Content.Load<SpriteFont>("PixelSingle");
+            pixelFont3 = pixelFont;
         }
 
         /// <summary>
@@ -127,6 +125,14 @@ namespace CaveFlea
 
         void Regen()
         {
+            if (Multiplayer)
+            {
+                pixelFont = pixelFont3;
+            }
+            else
+            {
+                pixelFont = pixelFont2;
+            }
             map = new MapHandler();
             map.MakeCaverns();
             map.MakeCaverns();
@@ -187,6 +193,11 @@ namespace CaveFlea
             map.Map[(int)PlayerPos.X, (int)PlayerPos.Y] = 0;
             if(Multiplayer)
                 map.Map[(int)Player2Pos.X, (int)Player2Pos.Y] = 0;
+            if (keysPressed.Contains(Keys.F11))
+            {
+                graphics.IsFullScreen = !graphics.IsFullScreen;
+                graphics.ApplyChanges();
+            }
             if (JumpCount != 0)
             {
                 JumpCount -= 1;
@@ -222,6 +233,16 @@ namespace CaveFlea
             }
             if (keysPressed.Contains(Keys.Back) || keysPressed.Contains(Keys.Escape))
                 Exit();
+            if (keysPressed.Contains(Keys.NumPad1))
+            {
+                Multiplayer = false;
+                Regen();
+            }
+            else if (keysPressed.Contains(Keys.NumPad2))
+            {
+                Multiplayer = true;
+                Regen();
+            }
             if (keysPressed.Contains(Keys.Enter))
             {
                 Regen();
@@ -321,6 +342,14 @@ namespace CaveFlea
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            if (Multiplayer)
+            {
+                pixelFont = pixelFont3;
+            }
+            else
+            {
+                pixelFont = pixelFont2;
+            }
             GraphicsDevice.Clear(Color.White);
 
             // TODO: Add your drawing code here
